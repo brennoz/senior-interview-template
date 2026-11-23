@@ -1,4 +1,3 @@
-#TODO: Anything to do here?
 spring:
   application:
     name: ec-temp-int
@@ -21,4 +20,6 @@ spring:
 
 logging:
   level:
-    org.hibernate.SQL: debug
+    root: INFO
+    com.elemental.tech: DEBUG
+    org.hibernate.SQL: WARN
