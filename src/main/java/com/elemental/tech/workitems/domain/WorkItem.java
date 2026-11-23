@@ -2,6 +2,8 @@ package com.elemental.tech.workitems.domain;
 
 import java.time.Instant;
 
+import com.elemental.tech.workitems.exception.WrongStatusTransitionException;
+import com.fasterxml.jackson.annotation.JsonAnyGetter;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -11,10 +13,13 @@ import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
 import jakarta.persistence.Version;
+import lombok.Getter;
 
 /*
     TODO: Refactor this, use a library that will simplify this if we can?.
  */
+
+@Getter
 @Entity
 @Table(name = "work_item")
 public class WorkItem {
@@ -69,7 +74,13 @@ public class WorkItem {
     }
 
     public void transitionTo(Status newStatus) {
-        // TODO: enforce transitions (OPEN -> IN_PROGRESS -> DONE, etc.) and decide what to do on invalid transitions...
+        boolean allowed =
+                (this.status == Status.OPEN        && (newStatus == Status.IN_PROGRESS || newStatus == Status.CANCELLED)) ||
+                        (this.status == Status.IN_PROGRESS && (newStatus == Status.DONE        || newStatus == Status.CANCELLED));
+
+        if (!allowed) {
+            throw new WrongStatusTransitionException(this.status, newStatus);
+        }
         this.status = newStatus;
         touch();
     }
