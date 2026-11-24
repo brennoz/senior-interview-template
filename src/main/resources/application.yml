@@ -18,6 +18,18 @@ spring:
         format_sql: true
     open-in-view: false
 
+ip-validation:
+  enabled: true
+  ip-header: X-Forwarded-For
+  fail-open: false
+  ip-api:
+    base-url: http://ip-api.com/json
+    fields: status,message,country,countryCode,isp,org,query
+    connect-timeout-ms: 2000
+    read-timeout-ms: 5000
+  blocked-countries: CN,ES,US
+  blocked-isp-keywords: Amazon,Google,Microsoft
+
 work-items:
   pagination:
     default-page-size: 20
